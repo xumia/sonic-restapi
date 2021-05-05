@@ -1,0 +1,56 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+
+pr: none
+
+stages:
+- stage: Build
+  jobs:
+  - job:
+    displayName: "build"
+    timeoutInMinutes: 60
+
+    pool:
+      vmImage: ubuntu-20.04
+
+    steps:
+    - script: |
+        sudo rm -rf $(ls -A1)
+      displayName: 'Clean Workspace'
+
+    - script: |
+        echo "Init.." 
+      displayName: 'Init'
+
+    - checkout: self
+      clean: true
+      submodules: recursive
+      displayName: 'Checkout code'
+
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        source: specific
+        project: build
+        pipeline: 142
+        artifact: sonic-buildimage.vs
+        patterns: target/debs/**
+        runVersion: 'latestFromBranch'
+        runBranch: 'refs/heads/master'
+      displayName: "Download sonic buildimage"
+
+    - script: 
+        ls ..
+
+    - script: |
+        echo "Install dependency"
+      displayName: "Install dependency"
+    - script: |
+        echo "Build"
+      displayName: "Build"
+    - publish: $(Build.ArtifactStagingDirectory)/
+      artifact: sonic-restapi
+      displayName: "Archive artifacts"
