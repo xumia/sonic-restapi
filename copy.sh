@@ -1,6 +1,6 @@
 set -e
 
-SDIR=../target/debs/stretch
+SDIR=../target/debs/buster
 cp $SDIR/libhiredis0.14_0.14.0-3~bpo9+1_amd64.deb debs
 cp $SDIR/libhiredis-dev_0.14.0-3~bpo9+1_amd64.deb debs
 cp $SDIR/libnl-3-200_3.5.0-1_amd64.deb debs
